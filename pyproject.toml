@@ -19,6 +19,7 @@ alembic = "^1.12.1"
 greenlet = "^3.0.1"
 psycopg2-binary = "^2.9.9"
 sqladmin = "^0.16.0"
+enums = "^0.0.2"
 
 
 [build-system]
