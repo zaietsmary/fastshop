@@ -15,3 +15,14 @@ class ProductModel(BaseModel):
 
     class Config:
         from_attributes = True
+
+class CategoryModel(BaseModel):
+    id: Optional[int]
+    title: str
+    description: Optional[str]
+    image: Optional[str]
+    is_active: bool
+    parent_id: Optional[int]
+
+    class Config:
+        from_attributes = True
