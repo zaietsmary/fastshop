@@ -6,4 +6,5 @@ class UserManagementRoutesPrefixes:
 
 
 class UserRoutesPrefixes(BaseCrudPrefixes):
-    ...
+    root = "/addresses"
+    detail = "/addresses/{address_id}"

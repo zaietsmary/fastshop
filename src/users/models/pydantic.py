@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from pydantic import (
     BaseModel,
@@ -19,3 +19,18 @@ class UserModel(BaseModel):
 
 class UserWithPassword(UserModel):
     hashed_password: str
+
+class UserAddressListResponse(BaseModel):
+    id: int
+    title: str
+
+class UserAddressDetailResponse(BaseModel):
+    id: int
+    title: Optional[str]
+    city: str
+    street: str
+    house: str
+    apartment: Optional[str]
+    post_code: Optional[str]
+    floor: Optional[str]
+    additional_info: Optional[str]

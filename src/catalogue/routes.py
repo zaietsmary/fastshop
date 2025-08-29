@@ -7,3 +7,6 @@ class CatalogueRoutesPrefixes:
 
 class ProductRoutesPrefixes(BaseCrudPrefixes):
     ...
+
+class AddressRoutesPrefixes(BaseCrudPrefixes):
+    ...

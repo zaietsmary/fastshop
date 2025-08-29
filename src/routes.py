@@ -1,8 +1,8 @@
 class BaseRoutesPrefixes:
-    swagger: str = '/docs'
-    redoc: str = '/redoc'
-    openapi: str = '/openapi.json'
+    swagger = '/docs'
+    redoc = '/redoc'
+    openapi = '/openapi.json'
 
-    catalogue: str = '/catalogue'
-    authentication: str = '/auth'
-    account: str = '/account'
+    catalogue = '/catalogue'
+    authentication = '/auth'
+    account = '/account'
