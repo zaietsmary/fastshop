@@ -6,10 +6,10 @@ from src.common.exceptions.base import ObjectDoesNotExistException
 from src.common.service import BaseService
 from src.reviews.models.mongo import (
     ProductReview,
-    Reply,
+    Reply, ProductAnalytics,
 )
-from src.reviews.repositories import ProductReviewRepository
-
+from src.reviews.repositories import ProductReviewRepository, ProductAnalyticsRepository
+from datetime import datetime
 
 class ProductReviewService(BaseService):
     def __init__(
@@ -44,3 +44,16 @@ class ProductReviewService(BaseService):
         review.replies.append(reply.model_dump())
 
         return await review.save()
+
+class ProductAnalyticsService(BaseService):
+    def __init__(
+        self,
+        repository: Annotated[ProductAnalyticsRepository, Depends(ProductAnalyticsRepository)],
+    ):
+        super().__init__(repository=repository)
+
+    async def visit_information(self, pk: int) -> ProductAnalytics:
+        record = ProductAnalytics(product_id=pk, timestamp=datetime.utcnow())
+        await record.insert()
+        return record
+

@@ -14,18 +14,17 @@ from src.common.exceptions.base import ObjectDoesNotExistException
 from src.common.schemas.common import ErrorResponse
 from src.reviews.models.mongo import (
     BaseProductReview,
-    ProductReview,
+    ProductReview, ProductAnalytics,
     Reply,
 )
 from src.reviews.routes import (
     ProductReviewRoutesPrefixes,
-    ReviewsRoutesPrefixes,
+    ReviewsRoutesPrefixes, ProductAnalyticsPrefixes
 )
-from src.reviews.services import ProductReviewService
+from src.reviews.services import ProductReviewService, ProductAnalyticsService
 
 
 router = APIRouter(prefix=ReviewsRoutesPrefixes.product_reviews)
-
 
 @router.get(
     ProductReviewRoutesPrefixes.root,
@@ -108,6 +107,32 @@ async def add_reply_to_review(
     """
     try:
         response = await service.add_reply(pk=pk, reply=reply)
+    except ObjectDoesNotExistException as exc:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ErrorResponse(message=exc.message)
+
+    return response
+
+
+
+
+@router.post(
+    ProductAnalyticsPrefixes.product_detail,
+    responses={
+        status.HTTP_200_OK: {'model': ProductAnalytics},
+        status.HTTP_404_NOT_FOUND: {'model': ErrorResponse},
+    },
+    status_code=status.HTTP_200_OK,
+    response_model=Union[ProductAnalytics, ErrorResponse],
+)
+async def add_record(
+    response: Response,
+    pk: int,
+    service: ProductAnalyticsService = Depends(),
+):
+
+    try:
+        response = await service.visit_information(pk=pk)
     except ObjectDoesNotExistException as exc:
         response.status_code = status.HTTP_404_NOT_FOUND
         return ErrorResponse(message=exc.message)
