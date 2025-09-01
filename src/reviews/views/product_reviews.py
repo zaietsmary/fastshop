@@ -9,7 +9,7 @@ from fastapi import (
     Response,
     status,
 )
-
+from datetime import datetime
 from src.common.exceptions.base import ObjectDoesNotExistException
 from src.common.schemas.common import ErrorResponse
 from src.reviews.models.mongo import (
@@ -19,9 +19,11 @@ from src.reviews.models.mongo import (
 )
 from src.reviews.routes import (
     ProductReviewRoutesPrefixes,
-    ReviewsRoutesPrefixes, ProductAnalyticsPrefixes
+    ReviewsRoutesPrefixes
 )
 from src.reviews.services import ProductReviewService, ProductAnalyticsService
+from src.catalogue.services import ProductService
+from src.catalogue.models.pydantic import ProductModel
 
 
 router = APIRouter(prefix=ReviewsRoutesPrefixes.product_reviews)
@@ -116,25 +118,15 @@ async def add_reply_to_review(
 
 
 
-@router.post(
-    ProductAnalyticsPrefixes.product_detail,
-    responses={
-        status.HTTP_200_OK: {'model': ProductAnalytics},
-        status.HTTP_404_NOT_FOUND: {'model': ErrorResponse},
-    },
-    status_code=status.HTTP_200_OK,
-    response_model=Union[ProductAnalytics, ErrorResponse],
-)
-async def add_record(
-    response: Response,
+@router.get("/catalogue/product/{pk}")
+async def product_detail(
     pk: int,
-    service: ProductAnalyticsService = Depends(),
+    analytics_service: ProductAnalyticsService = Depends()
 ):
-
     try:
-        response = await service.visit_information(pk=pk)
-    except ObjectDoesNotExistException as exc:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return ErrorResponse(message=exc.message)
+        await analytics_service.create_record(product_id=pk)
+    except Exception as e:
+        print(f"Analytics save failed: {e}")
 
-    return response
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+

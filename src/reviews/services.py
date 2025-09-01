@@ -45,6 +45,9 @@ class ProductReviewService(BaseService):
 
         return await review.save()
 
+
+
+
 class ProductAnalyticsService(BaseService):
     def __init__(
         self,
@@ -52,8 +55,10 @@ class ProductAnalyticsService(BaseService):
     ):
         super().__init__(repository=repository)
 
-    async def visit_information(self, pk: int) -> ProductAnalytics:
-        record = ProductAnalytics(product_id=pk, timestamp=datetime.utcnow())
-        await record.insert()
-        return record
+    async def create_record(self, product_id: int) -> ProductAnalytics:
+        record = ProductAnalytics(
+            product_id=product_id,
+            timestamp=datetime.utcnow()
+        )
+        return await self.repository.create(record)
 

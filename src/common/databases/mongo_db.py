@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.base_settings import base_settings
 from src.common.singleton import SingletonMeta
-from src.reviews.models.mongo import ProductReview, ProductAnalytics
+from src.reviews.models.mongo import ProductReview
 
 
 class AsyncMongoDBClient(AsyncIOMotorClient, metaclass=SingletonMeta):
@@ -20,6 +20,6 @@ async def init_mongo_db():
     await init_beanie(
         database=client.get_database(),
         document_models=[
-            ProductReview, ProductAnalytics
+            ProductReview
         ],
     )

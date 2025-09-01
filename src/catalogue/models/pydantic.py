@@ -11,7 +11,7 @@ class ProductModel(BaseModel):
     title: str
     description: Optional[str]
     short_description: Optional[constr(max_length=20)]
-    is_active: bool
+    is_active: Optional[bool] = None
 
     class Config:
         from_attributes = True
