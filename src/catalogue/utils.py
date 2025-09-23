@@ -7,10 +7,10 @@ from elasticsearch_dsl import (
 )
 from fastapi import Depends
 
-from src.catalogue.models.database import Product
+from src.catalogue.models.database import Product, Category
 from src.catalogue.models.elasticsearch import (
-    PRODUCT_INDEX,
-    ProductIndex,
+    PRODUCT_INDEX, CATEGORY_INDEX,
+    ProductIndex, CategoryIndex
 )
 from src.catalogue.models.pydantic import ProductElasticResponse
 from src.common.databases.elasticsearch import elastic_client
@@ -28,7 +28,7 @@ class ProductElasticManager:
 
         products_index.document(ProductIndex)
 
-        if not await products_index.exists():
+        if not  products_index.exists():
             await products_index.create()
 
     @staticmethod
@@ -79,3 +79,19 @@ class ProductElasticManager:
 
         if bulk_data:
             await self.client.bulk(body=bulk_data)
+
+class CategoryElasticManager:
+    def __init__(self, client: Annotated[AsyncElasticsearch, Depends(elastic_client)] = elastic_client):
+        self.client = client
+
+    async def init_indices(self):
+        categories_index = Index(
+            name=CATEGORY_INDEX,
+            using=self.client,
+        )
+
+        categories_index.document(CategoryIndex)
+
+        exists = await self.client.indices.exists(index=CATEGORY_INDEX)
+        if not exists:
+            await self.client.indices.create(index=CATEGORY_INDEX)
